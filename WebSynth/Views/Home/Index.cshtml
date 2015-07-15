@@ -1,0 +1,10 @@
+﻿
+<div id="WebSynth" class="fw">
+    <div id="WebSynth-view" data-ui-view=""></div>
+</div>
+
+
+@section scripts
+{
+    <script src="@Url.Content("~/Scripts/require.js")" data-main="@Url.Content("~/app/scripts/main.js?v="+DateTime.Now.Ticks)"></script>
+}

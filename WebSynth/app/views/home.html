@@ -1,0 +1,148 @@
+﻿<h3>Angular Web Synth</h3>
+
+<div style="padding:5px;">
+    <button class="btn btn-primary" data-ng-show="closed" data-ng-click="closed = false">Show Controls <i class="fa fa-chevron-down"></i></button>
+</div>
+
+<div data-ng-class="{show: !closed}" class="collapsable show" style="width: 900px; background-color: #222; border-radius: 8px; position: relative;">
+
+    <fieldset class="section" style="left: 10px; top: 10px;">
+        <legend class="sectionLabel">CONTROLLERS</legend>
+
+        <div class="controlContainer">
+            <div class="dropdownContainer">
+                <div class="dropdownLabel">WAVEFORM</div>
+                <select class="dropdownSelect" data-ng-options="item.name for item in waveforms" data-ng-model="lfoSelectedWaveform"></select>
+            </div>
+
+            <div style="width:98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-frequency-knob="" data-client-left="0" data-client-top="0" data-step=".1" data-value="lfoRate" data-min-value="0" data-max-value="10" data-tooltip="LFO Frequency"></div>
+            </div>
+            <div>LFO RATE</div>
+
+            <div style="width:98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-step=".1" data-value="osc1Mod" data-min-value="0" data-max-value="10" data-tooltip="OSC1 Modulation Amount"></div>
+                <div>OSC1 MOD</div>
+            </div>
+
+            <div style="width: 98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-step=".1" data-value="osc2Mod" data-min-value="0" data-max-value="10" data-tooltip="OSC2 Modulation Amount"></div>
+                <div>OSC2 MOD</div>
+
+            </div>
+
+
+
+        </div>
+
+    </fieldset>
+
+    <fieldset class="section" style="left: 155px; top: 10px; height: 165px;">
+        <legend class="sectionLabel">OSC1</legend>
+        <div class="controlContainer">
+
+            <div class="dropdownContainer">
+                <div class="dropdownLabel">WAVEFORM</div>
+                <select class="dropdownSelect" data-ng-options="item.name for item in waveforms" data-ng-model="osc1SelectedWaveform"></select>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-frequency-knob="" data-client-left="0" data-client-top="0" data-value="osc1Range" data-step="1" data-min-value="1" data-max-value="5" data-tooltip="OSC1 Octave Range" data-format="formatRange"></div>
+                <div style="text-align: center; font-weight: bold;">RANGE</div>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-frequency-knob="" data-client-left="0" data-client-top="0" data-value="osc1Detune" data-step="1" data-min-value="-8" data-max-value="8" data-tooltip="OSC1 Detune"></div>
+                <div style="text-align: center; font-weight: bold;">DETUNE</div>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-value="osc1Mix" data-step="1" data-min-value="0" data-max-value="100" data-tooltip="OSC1 Mix"></div>
+                <div style="text-align: center; font-weight: bold;">MIX</div>
+            </div>
+
+        </div>
+    </fieldset>
+    <fieldset class="section" style="left: 155px; top: 190px; height: 165px;">
+        <legend class="sectionLabel">OSC2</legend>
+
+        <div class="controlContainer">
+            <div class="dropdownContainer">
+                <div class="dropdownLabel">WAVEFORM</div>
+                <select class="dropdownSelect" data-ng-options="item.name for item in waveforms" data-ng-model="osc2SelectedWaveform"></select>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                    <div style="width: 64px; margin: 0 auto;" data-ws-frequency-knob="" data-client-left="0" data-client-top="0" data-value="osc2Range" data-step="1" data-min-value="1" data-max-value="5" data-tooltip="OSC2 Octave Range" data-format="formatRange"></div>
+                <div style="text-align: center; font-weight: bold;">RANGE</div>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                    <div style="width: 64px; margin: 0 auto;" data-ws-frequency-knob="" data-client-left="0" data-client-top="0" data-value="osc2Detune" data-step="1" data-min-value="-8" data-max-value="8" data-tooltip="OSC2 Detune"></div>
+                <div style="text-align: center; font-weight: bold;">DETUNE</div>
+            </div>
+
+            <div style="float: left; width: 98px;">
+                 <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-value="osc2Mix" data-step="1" data-min-value="0" data-max-value="100" data-tooltip="OSC2 Mix"></div>
+                <div style="text-align: center; font-weight: bold;">MIX</div>
+            </div>
+        </div>
+    </fieldset>
+<!--    <fieldset class="section" style="left: 474px; top: 10px;">
+        <legend class="sectionLabel">Output</legend>
+        <div class="controlContainer">
+            <div style="width: 64px; margin: 0 auto; padding: 5px;">
+                <div data-ws-knob="" data-client-left="0" data-client-top="0" data-value="volume" data-step=".1" data-min-value="0" data-max-value="10" data-tooltip="Master Gain"></div>
+            </div>
+            <div style="font-weight: bold;">MASTER GAIN</div>
+
+        </div>
+    </fieldset>-->
+
+    <fieldset class="section" style="left: 474px; top: 10px;">
+        <legend class="sectionLabel">Filter</legend>
+        <div class="controlContainer">
+            <div style="width: 64px; margin: 0 auto; padding: 5px;">
+                <div data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterCutoff" data-units="Hz" data-scale="log" data-min-value="20" data-max-value="20000" data-tooltip="Cutoff"></div>
+            </div>
+            <div style="font-weight: bold;">CUTOFF</div>
+
+        </div>
+        <div class="controlContainer">
+            <div style="width: 64px; margin: 0 auto; padding: 5px;">
+                <div data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterResonance" data-step=".2" data-min-value="0" data-max-value="20" data-tooltip="Q"></div>
+            </div>
+            <div style="font-weight: bold;">Q</div>
+
+        </div>
+    </fieldset>
+
+    <button class="btn btn-primary" style="position: absolute; right: 10px; bottom: 10px;" ng-click="closed = true">Hide Controls <i class="fa fa-chevron-up"></i></button>
+</div>
+
+
+<div style="width: 980px;">
+    <div style="float: left; padding: 5px;">
+        <div data-ws-wheel="" data-value="glideRate" data-step="1" data-min-value="0" data-max-value="100" data-tooltip="Glide Rate" data-units="%"></div>
+        <div style="text-align: center; font-weight: bold;">
+            GLIDE
+        </div>
+    </div>
+    <div style="float: left; padding: 5px;">
+        <div data-ws-wheel="" data-value="pitchWheel" data-step="1" data-min-value="-2" data-max-value="2" data-tooltip="Keyboard Pitch" data-format="formatPitch()"></div>
+        <div style="text-align: center; font-weight: bold;">
+            PITCH
+        </div>
+    </div>
+
+    <div style="float: left;">
+        <div data-ws-qwerty-hancock=""
+            data-keyboard-height="150"
+            data-keyboard-width="800"
+            data-active-color="#227ce8"
+            data-start-note="A2"
+            data-rounded-border="{{true}}"
+            data-octaves="4">
+        </div>
+    </div>
+</div>
