@@ -59,10 +59,11 @@
 
             $scope.filterCutoff = 0;
 
-            audioService.initializeReverb();
+            $scope.filterMod = 0;
+            $scope.filterEnvelope = 0;
 
             $scope.formatRange = function (val) {
-                return Math.pow(2,val) + "'";
+                return Math.pow(2,6 - val) + "'";
             };
 
             $scope.$on('keyboard-keyDown', function (event, data) {

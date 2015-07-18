@@ -102,17 +102,22 @@
     <fieldset class="section" style="left: 474px; top: 10px;">
         <legend class="sectionLabel">Filter</legend>
         <div class="controlContainer">
-            <div style="width: 64px; margin: 0 auto; padding: 5px;">
-                <div data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterCutoff" data-units="Hz" data-scale="log" data-min-value="20" data-max-value="20000" data-tooltip="Cutoff"></div>
+            <div style="float: left; width: 98px;">
+                <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterCutoff" data-units="Hz" data-scale="log" data-min-value="20" data-max-value="20000" data-tooltip="Cutoff"></div>
+                <div style="font-weight: bold;">CUTOFF</div>
             </div>
-            <div style="font-weight: bold;">CUTOFF</div>
-
-        </div>
-        <div class="controlContainer">
-            <div style="width: 64px; margin: 0 auto; padding: 5px;">
-                <div data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterResonance" data-step=".2" data-min-value="0" data-max-value="20" data-tooltip="Q"></div>
+            <div style="float: left; width: 98px;">
+                <div style="width: 64px; margin: 0 auto;"  data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterResonance" data-step=".2" data-min-value="0" data-max-value="20" data-tooltip="Q"></div>
+                <div style="font-weight: bold;">Q</div>
             </div>
-            <div style="font-weight: bold;">Q</div>
+            <div style="float: left; width: 98px;">
+                 <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterMod" data-step="1" data-min-value="0" data-max-value="100" data-tooltip="Filter Modulation"></div>
+                <div style="text-align: center; font-weight: bold;">MOD</div>
+            </div>
+            <div style="float: left; width: 98px;">
+                 <div style="width: 64px; margin: 0 auto;" data-ws-knob="" data-client-left="0" data-client-top="0" data-value="filterEnvelope" data-step="1" data-min-value="0" data-max-value="100" data-tooltip="Filter Envelope"></div>
+                <div style="text-align: center; font-weight: bold;">ENV</div>
+            </div>
 
         </div>
     </fieldset>
