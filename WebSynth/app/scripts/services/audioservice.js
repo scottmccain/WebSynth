@@ -1,6 +1,6 @@
-﻿define(['app'], function () {
-    return angular.module('WebSynth-services')
-        .service('audioService', function ($log) {
+﻿define(["app"], function () {
+    return angular.module("WebSynth-services")
+        .service("audioService", function ($log) {
 
             function frequencyFromNoteNumber(note) {
                 return 440 * Math.pow(2, (note - 69) / 12);
@@ -9,14 +9,15 @@
             // the master effects chain for all voices to connect to.
             var audioContext = new AudioContext();
 
-            function AudioNode() {
-                this.outputNode;
-                this.inputNode;
+            function audioNode() {
+                this.outputNode = null;
+                this.inputNode = null;
             }
 
-            AudioNode.prototype.connect = function (node) {
+            audioNode.prototype.connect = function (node) {
 
                 console.log("node: ", node);
+                $log.debug("outputNode: ", this.outputNode);
 
                 if (node.hasOwnProperty('inputNode')) {
                     this.outputNode.connect(node.inputNode);
@@ -25,82 +26,83 @@
                 }
             };
 
-            function OutputNode() {
-                this.masterGain = audioContext.createGain();
+            function output() {
+                var masterGain = audioContext.createGain();
 
-                this.waveshaper = new WaveShaper(audioContext);
-                this.reverbNode = audioContext.createConvolver();
-                this.reverbGain = audioContext.createGain();
-                this.reverbBypassGain = audioContext.createGain();
-                this.volumeNode = audioContext.createGain();
-                this.compressor = audioContext.createDynamicsCompressor();
+                var waveshaper = new WaveShaper(audioContext);
+                var reverbNode = audioContext.createConvolver();
+                var reverbGain = audioContext.createGain();
+                var reverbBypassGain = audioContext.createGain();
+                var volumeNode = audioContext.createGain();
+                var compressor = audioContext.createDynamicsCompressor();
 
-                this.masterGain.connect(this.waveshaper.input);
+                masterGain.connect(waveshaper.input);
 
-                this.waveshaper.output.connect(this.reverbNode);
-                this.waveshaper.output.connect(this.reverbBypassGain);
-                this.reverbNode.connect(this.reverbGain);
-                this.reverbGain.connect(this.volumeNode);
-                this.reverbBypassGain.connect(this.volumeNode);
+                waveshaper.output.connect(reverbNode);
+                waveshaper.output.connect(reverbBypassGain);
+                reverbNode.connect(reverbGain);
+                reverbGain.connect(volumeNode);
+                reverbBypassGain.connect(volumeNode);
 
-                this.volumeNode.connect(this.compressor);
+                volumeNode.connect(compressor);
+
+                // 0 - 1
+                this.setReverb = function (val) {
+                    // equal-power crossfade
+                    var gain1 = Math.cos(val * 0.5 * Math.PI);
+                    var gain2 = Math.cos((1.0 - val) * 0.5 * Math.PI);
+
+                    reverbBypassGain.gain.value = gain1;
+                    reverbGain.gain.value = gain2;
+                };
+
+                this.setVolume = function (volume) {
+                    volumeNode.gain.value = volume;
+                };
+
+                this.initializeReverbBuffer = function (buffer) {
+                    reverbNode.buffer = buffer;
+                };
+
+                this.setDrive = function (driveLevel) {
+                    waveshaper.setDrive((driveLevel * driveLevel / 500.0));
+                };
+
+                this.inputNode = masterGain;
+                this.outputNode = audioContext.destination;
+
 
                 this.setReverb(0);
                 this.setDrive(.2);
                 this.setVolume(0);
 
-                this.inputNode = this.masterGain;
-                this.outputNode = audioContext.destination;
+                compressor.connect(this.outputNode);
 
-                this.compressor.connect(this.outputNode);
             };
 
-            OutputNode.prototype = new AudioNode();
-            OutputNode.prototype.constructor = AudioNode;
+            output.prototype = new audioNode();
+            output.prototype.constructor = output;
 
-
-            OutputNode.prototype.setDrive = function (driveLevel) {
-                this.waveshaper.setDrive((driveLevel * driveLevel / 500.0));
-            };
-
-            // 0 - 1
-            OutputNode.prototype.setReverb = function (val) {
-                // equal-power crossfade
-                var gain1 = Math.cos(val * 0.5 * Math.PI);
-                var gain2 = Math.cos((1.0 - val) * 0.5 * Math.PI);
-
-                this.reverbBypassGain.gain.value = gain1;
-                this.reverbGain.gain.value = gain2;
-            };
-
-            OutputNode.prototype.setVolume = function (volume) {
-                this.volumeNode.gain.value = volume;
-            };
-
-            OutputNode.prototype.initializeReverbBuffer = function (buffer) {
-                this.reverbNode.buffer = buffer;
-            };
-
-            function VCO() {
+            function vco() {
 
                 var oscillator = audioContext.createOscillator();
 
-                this.inputNode = this.oscillator;
-                this.outputNode = this.oscillator;
+                this.inputNode = oscillator;
+                this.outputNode = oscillator;
 
                 this.setFrequency = function (frequency) {
                     oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 }
 
-                oscillator.type = 'sine';
+                oscillator.type = "sine";
                 this.setFrequency(440);
                 oscillator.start(0);
             }
 
-            VCO.prototype = new AudioNode();
-            VCO.prototype.constructor = VCO;
+            vco.prototype = new audioNode();
+            vco.prototype.constructor = vco;
 
-            function VCA() {
+            function vca() {
                 var gain = audioContext.createGain();
 
                 this.inputNode = gain;
@@ -113,10 +115,10 @@
                 this.setGain(0);
             };
 
-            VCA.prototype = new AudioNode();
-            VCA.prototype.constructor = VCA;
+            vca.prototype = new audioNode();
+            vca.prototype.constructor = vca;
 
-            var effectChain = new OutputNode();
+            var effectChain = new output();
 
             var initializeReverb = function () {
                 var irRRequest = new XMLHttpRequest();
@@ -136,30 +138,30 @@
             effectChain.setVolume(1);
 
             function createOscillatorNode(options) {
-                var node = new VCO();
+                var vcoNode = new vco();
 
                 var frequency = 0;
                 if (options.freq) {
                     frequency = parseFloat(options.freq);
                 }
 
-                node.setFrequency(frequency);
-                return node;
+                vcoNode.setFrequency(frequency);
+                return vcoNode;
             }
 
             function createGainNode(options) {
-                var node = new VCA();
+                var vcaNode = new vca();
 
                 var rate = 0;
                 if (options.rate) {
                     rate = parseFloat(options.rate);
                 }
 
-                node.setGain(rate);
-                return node;
+                vcaNode.setGain(rate);
+                return vcaNode;
             }
 
-            var nodeJson = '[{"type":"oscillator","freq":440,"id":"osc1","connectedTo":"gain1"},{"type":"gain","rate":0,"id":"gain1","connectedTo":"OUTPUT"},{"type":"oscillator","freq":1,"connectedTo":"gain2"},{"type":"gain","rate":2000,"id":"gain2","connectedTo":"osc1.frequency"}]';
+            var nodeJson = '[{"type":"oscillator","freq":2000,"id":"osc1","connectedTo":"gain1"},{"type":"gain","rate":1,"id":"gain1","connectedTo":"OUTPUT"},{"type":"oscillator","freq":1,"connectedTo":"gain2"},{"type":"gain","rate":440,"id":"gain2","connectedTo":"osc1.frequency"}]';
 
 
             var nodes = JSON.parse(nodeJson);
@@ -167,47 +169,62 @@
             console.log(nodes);
 
             var audioNodes = {};
+            var nodeIndex;
+            var nodeOptions;
+            var ad;
+            for (nodeIndex in nodes) {
+                if (nodes.hasOwnProperty(nodeIndex)) {
 
-            for (var nodeIndex in nodes) {
-                var node = nodes[nodeIndex];
+                    ad = null;
 
-                var audioNode;
-                switch (node.type) {
-                    case 'oscillator':
-                        audioNode = createOscillatorNode(node);
+                    nodeOptions = nodes[nodeIndex];
+
+                    switch (nodeOptions.type) {
+                    case "oscillator":
+                        ad = createOscillatorNode(nodeOptions);
                         break;
 
-                    case 'gain':
-                        audioNode = createGainNode(node);
+                    case "gain":
+                        ad = createGainNode(nodeOptions);
                         break;
+                    }
+
+                    audioNodes[nodeOptions.id] = ad;
                 }
-
-                audioNodes[node.id] = audioNode;
             }
 
             // now do connections
-            for (var nodeIndex in nodes) {
-                var nodeOptions = nodes[nodeIndex];
-                var audioNode = audioNodes[nodeOptions.id];
+            for (nodeIndex in nodes) {
+                if (nodes.hasOwnProperty(nodeIndex)) {
+                    nodeOptions = nodes[nodeIndex];
+                    ad = audioNodes[nodeOptions.id];
+                    var parts = nodeOptions.connectedTo.split(".");
 
-                var parts = nodeOptions.connectedTo.split(".");
+                    var connectedTo = parts[0];
 
-                var connectedTo = parts[0];
+                    $log.debug("nodeOptions: ", nodeOptions);
 
-                if (connectedTo === "OUTPUT") {
-                    // special connection to output device
-                    audioNode.connect(effectChain);
-                } else {
-                    var other = audioNodes[connectedTo];
+                    if (connectedTo === "OUTPUT") {
+                        // special connection to output device
+                        ad.connect(effectChain);
+                    } else {
+                        var other = audioNodes[connectedTo];
 
-                    if (parts[1]) {
+                        $log.debug("connectedTo: ", connectedTo);
+                        $log.debug("type: ", nodeOptions.type);
+
+                        if (parts[1]) {
+                            ad.connect(other.inputNode[parts[1]]);
+                        } else {
+                            ad.connect(other);
+                        }
+
                     }
-                    console.log("other: ", other);
-                }
 
-                console.log(nodeOptions);
-                console.log(audioNode);
-                console.log(connectedTo);
+                    //console.log(nodeOptions);
+                    //console.log(ad);
+                    //console.log(connectedTo);
+                }
             }
 
         });
